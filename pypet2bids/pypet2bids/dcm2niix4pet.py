@@ -612,7 +612,11 @@ class Dcm2niix4PET:
                                 recon_filter_size = re.search(
                                     r"\d+.\d*", sidecar_json.get("ConvolutionKernel")
                                 )[0]
-                                recon_filter_size = float(recon_filter_size)
+                                try:
+                                    recon_filter_size = float(recon_filter_size)
+                                # deals with following // ValueError: could not convert string to float: '3 3' // as filter value when reconstructing with JSrecon12
+                                except ValueError:
+                                    recon_filter_size = float(recon_filter_size.split()[0])
                                 sidecar_json.update(
                                     {"ReconFilterSize": float(recon_filter_size)}
                                 )
